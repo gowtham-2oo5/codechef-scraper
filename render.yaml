@@ -5,6 +5,7 @@ services:
     plan: free
     branch: main
     buildCommand: |
+      # Install Chrome dependencies
       apt-get update && apt-get install -y \
         ca-certificates \
         fonts-liberation \
@@ -43,9 +44,36 @@ services:
         wget \
         xdg-utils \
         --no-install-recommends
-      npm install
-      npm install puppeteer
+      
+      # Install Node dependencies
+      npm ci
+      
+      # Create cache directory with proper permissions
       mkdir -p /opt/render/.cache/puppeteer
+      chmod -R 777 /opt/render/.cache/puppeteer
+      
+      # Install Chrome through Puppeteer
+      echo "Installing Chrome browser..."
+      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false npm run install-browsers
+      
+      # Verify Chrome installation
+      CHROME_PATH=$(find /opt/render/.cache/puppeteer -name "chrome" -type f | grep -v "\.initial-preferences" | head -1)
+      if [ -n "$CHROME_PATH" ]; then
+        echo "Found Chrome at: $CHROME_PATH"
+        echo "PUPPETEER_EXECUTABLE_PATH=$CHROME_PATH" >> .env
+        chmod +x $CHROME_PATH
+      else
+        echo "Chrome not found! Attempting direct installation..."
+        npx puppeteer browsers install chrome
+        CHROME_PATH=$(find /opt/render/.cache/puppeteer -name "chrome" -type f | grep -v "\.initial-preferences" | head -1)
+        if [ -n "$CHROME_PATH" ]; then
+          echo "Found Chrome at: $CHROME_PATH"
+          echo "PUPPETEER_EXECUTABLE_PATH=$CHROME_PATH" >> .env
+          chmod +x $CHROME_PATH
+        else
+          echo "Failed to install Chrome! Deployment may fail."
+        fi
+      fi
     startCommand: node app.js
     envVars:
       - key: NODE_ENV
@@ -54,5 +82,6 @@ services:
         value: 10000
       - key: PUPPETEER_CACHE_DIR
         value: '/opt/render/.cache/puppeteer'
+      - key: PUPPETEER_SKIP_DOWNLOAD
+        value: 'true'
     healthCheckPath: /health
-

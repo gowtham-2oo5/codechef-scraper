@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "echo 'No build step required lol'",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "install-browsers": "puppeteer browsers install chrome"
   },
   "keywords": [],
   "author": "",
