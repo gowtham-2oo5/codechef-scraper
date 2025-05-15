@@ -14,17 +14,19 @@ module.exports = async (handle) => {
   let browser;
   try {
     // First, let's check if Chrome is installed and locate it
-    const cacheDir = process.env.PUPPETEER_CACHE_DIR || '/opt/render/.cache/puppeteer';
+    const cacheDir = process.env.PUPPETEER_CACHE_DIR || '/opt/render/project/src/chrome';
     
-    console.log(`Looking for Chrome in cache directory: ${cacheDir}`);
+    console.log(`Looking for Chrome in directory: ${cacheDir}`);
     
     // Look for the specific version we installed
     const expectedChromePath = path.join(cacheDir, 'chrome', 'linux-136.0.7103.92', 'chrome-linux64', 'chrome');
     
     if (fs.existsSync(expectedChromePath)) {
       console.log(`Found Chrome at: ${expectedChromePath}`);
+      console.log('Chrome permissions:', fs.statSync(expectedChromePath).mode.toString(8));
     } else {
       console.log('Chrome not found at expected path, falling back to environment variable');
+      console.log('Directory contents:', fs.readdirSync(cacheDir));
     }
 
     const launchOptions = {
