@@ -47,6 +47,8 @@ services:
       
       # Install Node dependencies
       npm ci
+
+      echo "Installing puppeteer from render yaml"
       
       # Create cache directory with proper permissions
       mkdir -p /opt/render/.cache/puppeteer
