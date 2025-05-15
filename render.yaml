@@ -5,7 +5,7 @@ services:
     plan: free
     branch: main
     buildCommand: |
-      # Install Chrome dependencies
+      # Install dependencies
       apt-get update && apt-get install -y \
         ca-certificates \
         fonts-liberation \
@@ -52,28 +52,13 @@ services:
       mkdir -p /opt/render/.cache/puppeteer
       chmod -R 777 /opt/render/.cache/puppeteer
       
-      # Install Chrome through Puppeteer
-      echo "Installing Chrome browser..."
-      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false npm run install-browsers
+      # CRITICAL FIX: Install a specific version of Chrome that matches what Puppeteer expects
+      export PUPPETEER_DOWNLOAD_BASE_URL=https://storage.googleapis.com/chrome-for-testing-public
+      npx puppeteer browsers install chrome@136.0.7103.92
       
-      # Verify Chrome installation
-      CHROME_PATH=$(find /opt/render/.cache/puppeteer -name "chrome" -type f | grep -v "\.initial-preferences" | head -1)
-      if [ -n "$CHROME_PATH" ]; then
-        echo "Found Chrome at: $CHROME_PATH"
-        echo "PUPPETEER_EXECUTABLE_PATH=$CHROME_PATH" >> .env
-        chmod +x $CHROME_PATH
-      else
-        echo "Chrome not found! Attempting direct installation..."
-        npx puppeteer browsers install chrome
-        CHROME_PATH=$(find /opt/render/.cache/puppeteer -name "chrome" -type f | grep -v "\.initial-preferences" | head -1)
-        if [ -n "$CHROME_PATH" ]; then
-          echo "Found Chrome at: $CHROME_PATH"
-          echo "PUPPETEER_EXECUTABLE_PATH=$CHROME_PATH" >> .env
-          chmod +x $CHROME_PATH
-        else
-          echo "Failed to install Chrome! Deployment may fail."
-        fi
-      fi
+      # Log information about the installation for debugging
+      echo "Chrome installation completed. Checking for Chrome executable..."
+      find /opt/render/.cache/puppeteer -type f -name "chrome" | xargs ls -la
     startCommand: node app.js
     envVars:
       - key: NODE_ENV
@@ -82,6 +67,8 @@ services:
         value: 10000
       - key: PUPPETEER_CACHE_DIR
         value: '/opt/render/.cache/puppeteer'
-      - key: PUPPETEER_SKIP_DOWNLOAD
-        value: 'true'
+      - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
+        value: 'false'
+      - key: PUPPETEER_DOWNLOAD_BASE_URL
+        value: 'https://storage.googleapis.com/chrome-for-testing-public'
     healthCheckPath: /health
