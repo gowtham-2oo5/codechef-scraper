@@ -6,26 +6,11 @@
     "description": "Fetch CodeChef user profile data, rating graph data, and recent submissions for a given user handle."
   },
   "tags": [
-    {
-      "name": "Health",
-      "description": "Health check endpoint"
-    },
-    {
-      "name": "Whole",
-      "description": "Get aggregated full profile data"
-    },
-    {
-      "name": "Profile",
-      "description": "Basic user profile information"
-    },
-    {
-      "name": "Ratings",
-      "description": "User rating graph data"
-    },
-    {
-      "name": "Recent",
-      "description": "Recent accepted submissions"
-    }
+    { "name": "Health", "description": "Health check endpoint" },
+    { "name": "Whole", "description": "Get aggregated full profile data" },
+    { "name": "Profile", "description": "Basic user profile information" },
+    { "name": "Ratings", "description": "User rating graph data" },
+    { "name": "Recent", "description": "Recent accepted submissions" }
   ],
   "paths": {
     "/health": {
@@ -33,11 +18,7 @@
         "tags": ["Health"],
         "summary": "Health Check",
         "description": "Returns OK if the server is up and running.",
-        "responses": {
-          "200": {
-            "description": "Service is healthy"
-          }
-        }
+        "responses": { "200": { "description": "Service is healthy" } }
       }
     },
     "/api/whole/{handle}": {
@@ -51,18 +32,12 @@
             "in": "path",
             "description": "CodeChef username",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
-          "200": {
-            "description": "Full profile data retrieved successfully"
-          },
-          "500": {
-            "description": "Error retrieving data"
-          }
+          "200": { "description": "Full profile data retrieved successfully" },
+          "500": { "description": "Error retrieving data" }
         }
       }
     },
@@ -77,18 +52,12 @@
             "in": "path",
             "description": "CodeChef username",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
-          "200": {
-            "description": "Profile data retrieved successfully"
-          },
-          "500": {
-            "description": "Failed to retrieve profile data"
-          }
+          "200": { "description": "Profile data retrieved successfully" },
+          "500": { "description": "Failed to retrieve profile data" }
         }
       }
     },
@@ -103,18 +72,12 @@
             "in": "path",
             "description": "CodeChef username",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
-          "200": {
-            "description": "Rating graph data retrieved successfully"
-          },
-          "500": {
-            "description": "Failed to retrieve rating data"
-          }
+          "200": { "description": "Rating graph data retrieved successfully" },
+          "500": { "description": "Failed to retrieve rating data" }
         }
       }
     },
@@ -129,18 +92,12 @@
             "in": "path",
             "description": "CodeChef username",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
-          "200": {
-            "description": "Recent activity retrieved successfully"
-          },
-          "500": {
-            "description": "Failed to retrieve recent submissions"
-          }
+          "200": { "description": "Recent activity retrieved successfully" },
+          "500": { "description": "Failed to retrieve recent submissions" }
         }
       }
     }
