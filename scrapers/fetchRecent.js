@@ -18,37 +18,13 @@ module.exports = async (handle) => {
     
     console.log(`Looking for Chrome in cache directory: ${cacheDir}`);
     
-    // Try to find Chrome installation
-    let chromePath = null;
+    // Look for the specific version we installed
+    const expectedChromePath = path.join(cacheDir, 'chrome', 'linux-136.0.7103.92', 'chrome-linux64', 'chrome');
     
-    // Option 1: Look for exact version mentioned in error
-    const versionPaths = [
-      path.join(cacheDir, 'chrome', 'linux-1250561', 'chrome-linux64', 'chrome'),
-      path.join(cacheDir, 'chrome', 'linux-136.0.7103.92', 'chrome-linux64', 'chrome')
-    ];
-    
-    for (const vPath of versionPaths) {
-      if (fs.existsSync(vPath)) {
-        console.log(`Found Chrome at: ${vPath}`);
-        chromePath = vPath;
-        break;
-      }
-    }
-    
-    // Option 2: Search for any Chrome binary in the directory
-    if (!chromePath) {
-      try {
-        const searchCommand = `find ${cacheDir} -type f -name "chrome" | grep -v "initial-preferences"`;
-        const result = require('child_process').execSync(searchCommand, { encoding: 'utf8' });
-        const foundPaths = result.trim().split('\n');
-        
-        if (foundPaths.length > 0 && foundPaths[0]) {
-          console.log(`Found Chrome binary at: ${foundPaths[0]}`);
-          chromePath = foundPaths[0];
-        }
-      } catch (error) {
-        console.error('Error searching for Chrome:', error);
-      }
+    if (fs.existsSync(expectedChromePath)) {
+      console.log(`Found Chrome at: ${expectedChromePath}`);
+    } else {
+      console.log('Chrome not found at expected path, falling back to environment variable');
     }
 
     const launchOptions = {
@@ -66,16 +42,9 @@ module.exports = async (handle) => {
       ]
     };
 
-    // Use found Chrome if available
-    if (chromePath) {
-      console.log(`Using Chrome executable from: ${chromePath}`);
-      launchOptions.executablePath = chromePath;
-    } else if (process.env.PUPPETEER_EXECUTABLE_PATH) {
-      console.log(`Using Chrome from env: ${process.env.PUPPETEER_EXECUTABLE_PATH}`);
-      launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
-    } else {
-      console.log('No Chrome path found, letting Puppeteer use default browser');
-    }
+    // Use the Chrome path from environment variable or the one we found
+    launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || expectedChromePath;
+    console.log(`Using Chrome executable from: ${launchOptions.executablePath}`);
 
     console.log("Launching browser with options:", JSON.stringify(launchOptions));
     browser = await puppeteer.launch(launchOptions);
