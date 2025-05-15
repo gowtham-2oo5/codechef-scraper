@@ -36,7 +36,7 @@ app.get("/health", (_, res) => res.send("OK"));
 /** ============================
  * Debug Chrome Cache & Puppeteer
  ============================ **/
-app.get('/debug/chrome', (req, res) => {
+app.get('/debug/haha', (req, res) => {
   try {
     const cacheDir = process.env.PUPPETEER_CACHE_DIR || '/opt/render/.cache/puppeteer';
     const results = {

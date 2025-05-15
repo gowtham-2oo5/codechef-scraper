@@ -10,7 +10,8 @@
     { "name": "Whole", "description": "Get aggregated full profile data" },
     { "name": "Profile", "description": "Basic user profile information" },
     { "name": "Ratings", "description": "User rating graph data" },
-    { "name": "Recent", "description": "Recent accepted submissions" }
+    { "name": "Recent", "description": "Recent accepted submissions" },
+    { "name": "Debug", "description": "Debug chromium for puppeteer" }
   ],
   "paths": {
     "/health": {
@@ -98,6 +99,17 @@
         "responses": {
           "200": { "description": "Recent activity retrieved successfully" },
           "500": { "description": "Failed to retrieve recent submissions" }
+        }
+      }
+    },
+    "/debug/chrome": {
+      "get": {
+        "tags": ["Debug"],
+        "summary": "Debug chromium for puppeteer",
+        "description": "Debug chromium for puppeteer",
+        "responses": {
+          "200": { "description": "Debug chromium for puppeteer" },
+          "500": { "description": "Failed to debug chromium for puppeteer" }
         }
       }
     }
