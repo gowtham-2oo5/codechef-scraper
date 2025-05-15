@@ -23,9 +23,12 @@ module.exports = async (handle) => {
       ]
     };
 
-    // Try to use system Chrome if available
-    if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+    // Use system Chrome in production, download Chrome in development
+    if (process.env.NODE_ENV === 'production' && process.env.PUPPETEER_EXECUTABLE_PATH) {
       launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+    } else {
+      // In development, let Puppeteer download and use its own Chrome
+      process.env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = 'false';
     }
 
     browser = await puppeteer.launch(launchOptions);
