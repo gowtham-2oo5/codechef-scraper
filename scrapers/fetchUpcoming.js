@@ -31,10 +31,21 @@ module.exports = async () => {
         const name = nameElement ? nameElement.textContent.trim() : "";
         const code = nameElement ? nameElement.closest("a").href.split("/").pop() : "";
         
+        // Get start time information
+        const timerContainer = element.querySelector("div._timer__container_7s2sw_590");
+        let startTime = "";
+        if (timerContainer) {
+          const timeElements = timerContainer.querySelectorAll("p");
+          const days = timeElements[0]?.textContent.trim() || "";
+          const hours = timeElements[1]?.textContent.trim() || "";
+          startTime = `${days} ${hours}`.trim();
+        }
+        
         contests.push({
           name,
           code,
-          url: `https://www.codechef.com/${code}`
+          url: `https://www.codechef.com/${code}`,
+          startTime
         });
       });
 
