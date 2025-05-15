@@ -3,8 +3,22 @@
   "info": {
     "title": "CodeChef User Scraper API",
     "version": "1.0.0",
-    "description": "Fetch CodeChef user profile data, rating graph data, and recent submissions for a given user handle."
+    "description": "Fetch CodeChef user profile data, rating graph data, and recent submissions for a given user handle.",
+    "contact": {
+      "name": "API Support",
+      "url": "https://github.com/gowtham-2oo5/codechef-data-scraper/issues"
+    }
   },
+  "servers": [
+    {
+      "url": "https://codechef-scraper-api.onrender.com",
+      "description": "Production server"
+    },
+    {
+      "url": "http://localhost:8800",
+      "description": "Local development server"
+    }
+  ],
   "tags": [
     { "name": "Health", "description": "Health check endpoint" },
     { "name": "Whole", "description": "Get aggregated full profile data" },
@@ -13,13 +27,50 @@
     { "name": "Recent", "description": "Recent accepted submissions" },
     { "name": "Debug", "description": "Debug chromium for puppeteer" }
   ],
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string",
+            "example": "User Not Found"
+          },
+          "message": {
+            "type": "string",
+            "example": "No CodeChef user found with handle: example_user"
+          },
+          "status": {
+            "type": "integer",
+            "example": 404
+          }
+        }
+      }
+    }
+  },
   "paths": {
     "/health": {
       "get": {
         "tags": ["Health"],
         "summary": "Health Check",
         "description": "Returns OK if the server is up and running.",
-        "responses": { "200": { "description": "Service is healthy" } }
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "OK"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/whole/{handle}": {
@@ -37,8 +88,61 @@
           }
         ],
         "responses": {
-          "200": { "description": "Full profile data retrieved successfully" },
-          "500": { "description": "Error retrieving data" }
+          "200": {
+            "description": "Full profile data retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "profile": {
+                      "type": "object"
+                    },
+                    "ratings": {
+                      "type": "object"
+                    },
+                    "recent": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -57,8 +161,64 @@
           }
         ],
         "responses": {
-          "200": { "description": "Profile data retrieved successfully" },
-          "500": { "description": "Failed to retrieve profile data" }
+          "200": {
+            "description": "Profile data retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "John Doe"
+                    },
+                    "currentRating": {
+                      "type": "integer",
+                      "example": 1500
+                    },
+                    "stars": {
+                      "type": "string",
+                      "example": "3★"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -77,8 +237,39 @@
           }
         ],
         "responses": {
-          "200": { "description": "Rating graph data retrieved successfully" },
-          "500": { "description": "Failed to retrieve rating data" }
+          "200": {
+            "description": "Rating graph data retrieved successfully"
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -97,8 +288,39 @@
           }
         ],
         "responses": {
-          "200": { "description": "Recent activity retrieved successfully" },
-          "500": { "description": "Failed to retrieve recent submissions" }
+          "200": {
+            "description": "Recent activity retrieved successfully"
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -108,8 +330,19 @@
         "summary": "Debug chromium for puppeteer",
         "description": "Debug chromium for puppeteer",
         "responses": {
-          "200": { "description": "Debug chromium for puppeteer" },
-          "500": { "description": "Failed to debug chromium for puppeteer" }
+          "200": {
+            "description": "Debug information retrieved successfully"
+          },
+          "500": {
+            "description": "Failed to retrieve debug information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
         }
       }
     }

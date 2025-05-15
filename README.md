@@ -22,8 +22,7 @@ A simple Express.js API that fetches **live CodeChef user data** using Puppeteer
 | `/api/ratings/:handle` | Ratings history    |
 | `/api/recent/:handle`  | Recent submissions |
 
-<!-- 🔗 **Swagger Docs**: [https://<your-deployed-url>/api-docs](https://<your-deployed-url>/api-docs)
-🔗 **API Base URL**: [https://<your-deployed-url>](https://<your-deployed-url>) -->
+🔗 **API Base URL**: [https://codechef-scraper-api.onrender.com](https://codechef-scraper-api.onrender.com)
 
 ---
 
@@ -33,6 +32,27 @@ A simple Express.js API that fetches **live CodeChef user data** using Puppeteer
 * Puppeteer (headless scraping)
 * Clean REST APIs
 * Deployed on Render
+
+---
+
+## 🔍 Error Handling
+
+The API provides detailed error responses for various scenarios:
+
+* `400 Bad Request` - Invalid input (e.g., empty username)
+* `404 Not Found` - User not found on CodeChef
+* `500 Internal Server Error` - Server-side errors
+* `503 Service Unavailable` - Connection issues with CodeChef
+
+All error responses follow this format:
+```json
+{
+  "success": false,
+  "error": "Error Type",
+  "message": "Detailed error message",
+  "status": 400
+}
+```
 
 ---
 
