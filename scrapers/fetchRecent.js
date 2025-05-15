@@ -20,16 +20,11 @@ module.exports = async (handle) => {
         "--disable-accelerated-2d-canvas",
         "--disable-gpu",
         "--window-size=1920x1080",
-      ]
+      ],
+      // Let Puppeteer handle browser installation and caching
+      ignoreDefaultArgs: ['--disable-extensions'],
+      cacheDirectory: process.env.PUPPETEER_CACHE_DIR || '/opt/render/.cache/puppeteer'
     };
-
-    // Use system Chrome in production, download Chrome in development
-    if (process.env.NODE_ENV === 'production' && process.env.PUPPETEER_EXECUTABLE_PATH) {
-      launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
-    } else {
-      // In development, let Puppeteer download and use its own Chrome
-      process.env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = 'false';
-    }
 
     browser = await puppeteer.launch(launchOptions);
 
