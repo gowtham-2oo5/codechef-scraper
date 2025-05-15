@@ -1,14 +1,40 @@
 const puppeteer = require("puppeteer");
 
 module.exports = async (handle) => {
+  if (!handle || typeof handle !== 'string') {
+    return {
+      success: false,
+      error: "Invalid handle provided",
+      message: "Please provide a valid CodeChef handle"
+    };
+  }
+
   let browser;
   try {
-    browser = await puppeteer.launch({
+    const launchOptions = {
       headless: "new",
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-accelerated-2d-canvas",
+        "--disable-gpu",
+        "--window-size=1920x1080",
+      ]
+    };
+
+    // Try to use system Chrome if available
+    if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+      launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+    }
+
+    browser = await puppeteer.launch(launchOptions);
 
     const page = await browser.newPage();
+    
+    // Set a reasonable timeout
+    page.setDefaultNavigationTimeout(30000);
+    
     await page.goto(`https://www.codechef.com/users/${handle}`, {
       waitUntil: "domcontentloaded",
     });

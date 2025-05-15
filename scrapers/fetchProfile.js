@@ -11,7 +11,7 @@ module.exports = async (handle) => {
     const profile = $(".user-details-container");
     const ratingRanks = $(".rating-ranks");
 
-    const name = profile.find("h2").text().trim();
+    const name = profile.find("h1.h2-style").text().trim();
     const profileImage = profile.find("img").attr("src");
     const currentRating = parseInt($(".rating-number").first().text());
     const highestRating = parseInt(
@@ -20,8 +20,9 @@ module.exports = async (handle) => {
     const stars = $(".rating").first().text().trim();
     const countryName = $(".user-country-name").text().trim();
     const countryFlag = $(".user-country-flag").attr("src");
-    const globalRank = parseInt(ratingRanks.find("td").eq(0).text());
-    const countryRank = parseInt(ratingRanks.find("td").eq(1).text());
+    
+    const globalRank = parseInt(ratingRanks.find(".inline-list li").first().find("strong").text());
+    const countryRank = parseInt(ratingRanks.find(".inline-list li").last().find("strong").text());
 
     return {
       success: true,
