@@ -34,25 +34,53 @@ module.exports = async () => {
         // Get start time information
         const timerContainer = element.querySelector("div._timer__container_7s2sw_590");
         let startTime = "";
+        let startDate = null;
+        
         if (timerContainer) {
           const timeElements = timerContainer.querySelectorAll("p");
           const days = timeElements[0]?.textContent.trim() || "";
           const hours = timeElements[1]?.textContent.trim() || "";
           startTime = `${days} ${hours}`.trim();
+          
+          // Calculate actual start date
+          if (days && hours) {
+            const daysNum = parseInt(days);
+            const hoursNum = parseInt(hours);
+            if (!isNaN(daysNum) && !isNaN(hoursNum)) {
+              const startDateObj = new Date();
+              startDateObj.setDate(startDateObj.getDate() + daysNum);
+              startDateObj.setHours(startDateObj.getHours() + hoursNum);
+              
+              // Format date in a readable format
+              startDate = startDateObj.toLocaleString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZoneName: 'short'
+              });
+            }
+          }
         }
         
-        contests.push({
-          name,
-          code,
-          url: `https://www.codechef.com/${code}`,
-          startTime
-        });
+        // Only add contests that have start time information
+        if (startTime && startDate) {
+          contests.push({
+            name,
+            code,
+            url: `https://www.codechef.com/${code}`,
+            startTime,
+            startDate
+          });
+        }
       });
 
       return contests;
     });
 
-    console.log(`Found ${upcomingContests.length} upcoming contests`);
+    console.log(`Found ${upcomingContests.length} upcoming contests with start times`);
     return { success: true, upcomingContests };
   } catch (err) {
     console.error("Error in CodeChef upcoming contests scraper:", err);
