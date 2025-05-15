@@ -1,0 +1,148 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "CodeChef User Scraper API",
+    "version": "1.0.0",
+    "description": "Fetch CodeChef user profile data, rating graph data, and recent submissions for a given user handle."
+  },
+  "tags": [
+    {
+      "name": "Health",
+      "description": "Health check endpoint"
+    },
+    {
+      "name": "Whole",
+      "description": "Get aggregated full profile data"
+    },
+    {
+      "name": "Profile",
+      "description": "Basic user profile information"
+    },
+    {
+      "name": "Ratings",
+      "description": "User rating graph data"
+    },
+    {
+      "name": "Recent",
+      "description": "Recent accepted submissions"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": ["Health"],
+        "summary": "Health Check",
+        "description": "Returns OK if the server is up and running.",
+        "responses": {
+          "200": {
+            "description": "Service is healthy"
+          }
+        }
+      }
+    },
+    "/api/whole/{handle}": {
+      "get": {
+        "tags": ["Whole"],
+        "summary": "Get full profile data (aggregated)",
+        "description": "Fetches all available data (profile, ratings, recent submissions) for the given CodeChef user handle.",
+        "parameters": [
+          {
+            "name": "handle",
+            "in": "path",
+            "description": "CodeChef username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full profile data retrieved successfully"
+          },
+          "500": {
+            "description": "Error retrieving data"
+          }
+        }
+      }
+    },
+    "/api/profile/{handle}": {
+      "get": {
+        "tags": ["Profile"],
+        "summary": "Get basic profile data",
+        "description": "Returns user name, rating, stars, country, and other basic profile metadata.",
+        "parameters": [
+          {
+            "name": "handle",
+            "in": "path",
+            "description": "CodeChef username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile data retrieved successfully"
+          },
+          "500": {
+            "description": "Failed to retrieve profile data"
+          }
+        }
+      }
+    },
+    "/api/ratings/{handle}": {
+      "get": {
+        "tags": ["Ratings"],
+        "summary": "Get user rating graph data",
+        "description": "Returns user's long challenge ratings history for plotting graphs.",
+        "parameters": [
+          {
+            "name": "handle",
+            "in": "path",
+            "description": "CodeChef username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rating graph data retrieved successfully"
+          },
+          "500": {
+            "description": "Failed to retrieve rating data"
+          }
+        }
+      }
+    },
+    "/api/recent/{handle}": {
+      "get": {
+        "tags": ["Recent"],
+        "summary": "Get recent accepted submissions",
+        "description": "Fetches a list of recently accepted problems by the user.",
+        "parameters": [
+          {
+            "name": "handle",
+            "in": "path",
+            "description": "CodeChef username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recent activity retrieved successfully"
+          },
+          "500": {
+            "description": "Failed to retrieve recent submissions"
+          }
+        }
+      }
+    }
+  }
+}
