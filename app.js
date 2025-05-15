@@ -22,6 +22,7 @@ app.use("/api/whole", require("./routes/all"));
 app.use("/api/profile", require("./routes/profile"));
 app.use("/api/ratings", require("./routes/ratings"));
 app.use("/api/recent", require("./routes/recent"));
+app.use("/api/upcoming", require("./routes/upcoming"));
 
 /** ============================
  * Swagger Documentation

@@ -3,7 +3,7 @@
   "info": {
     "title": "CodeChef User Scraper API",
     "version": "1.0.0",
-    "description": "Fetch CodeChef user profile data, rating graph data, and recent submissions for a given user handle.",
+    "description": "Fetch CodeChef user profile data, rating graph data, recent submissions, and upcoming contests for a given user handle.",
     "contact": {
       "name": "API Support",
       "url": "https://github.com/gowtham-2oo5/codechef-data-scraper/issues"
@@ -25,6 +25,7 @@
     { "name": "Profile", "description": "Basic user profile information" },
     { "name": "Ratings", "description": "User rating graph data" },
     { "name": "Recent", "description": "Recent accepted submissions" },
+    { "name": "Upcoming", "description": "Upcoming CodeChef contests" },
     { "name": "Debug", "description": "Debug chromium for puppeteer" }
   ],
   "components": {
@@ -307,6 +308,61 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/upcoming": {
+      "get": {
+        "tags": ["Upcoming"],
+        "summary": "Get upcoming contests",
+        "description": "Fetches a list of upcoming CodeChef contests.",
+        "responses": {
+          "200": {
+            "description": "Upcoming contests retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "upcomingContests": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "example": "Starters 187"
+                          },
+                          "code": {
+                            "type": "string",
+                            "example": "START187"
+                          },
+                          "url": {
+                            "type": "string",
+                            "example": "https://www.codechef.com/START187"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
