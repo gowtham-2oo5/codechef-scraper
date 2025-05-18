@@ -55,13 +55,16 @@ module.exports = async (handle) => {
         .map((r) => {
           const cols = r.querySelectorAll("td");
           const status = cols[2]?.textContent?.trim() || "";
+          const lang = cols[3]?.textContent?.trim() || "";
           if (status.includes("100")) {
+            console.log("Mhmm, seeing: ", JSON.stringify(cols));
             const a = cols[1]?.querySelector("a");
             if (a) {
               return {
                 problem_name: a.textContent.trim(),
                 problem_url:
                   "https://www.codechef.com" + a.getAttribute("href"),
+                language: lang,
               };
             }
           }
