@@ -32,6 +32,7 @@ module.exports = async (handle) => {
 
     const profile = $(".user-details-container");
     const ratingRanks = $(".rating-ranks");
+    const totalSolved = $(".rating-data-section");
 
     if (!profile.length) {
       return {
@@ -63,6 +64,12 @@ module.exports = async (handle) => {
         ratingRanks.find(".inline-list li").last().find("strong").text()
       ) || 0;
 
+    const totalSolvedCount = totalSolved
+      .find("h3")
+      .last()
+      .text()
+      .split(":")[1]
+      .trim();
     return {
       success: true,
       name,
@@ -74,6 +81,7 @@ module.exports = async (handle) => {
       countryFlag,
       globalRank,
       countryRank,
+      totalSolvedCount,
       status: 200,
     };
   } catch (err) {
