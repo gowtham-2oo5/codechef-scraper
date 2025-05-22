@@ -4,12 +4,12 @@ const cheerio = require("cheerio");
 module.exports = async (handle) => {
   try {
     // Input validation
-    if (!handle || typeof handle !== 'string' || handle.trim() === '') {
+    if (!handle || typeof handle !== "string" || handle.trim() === "") {
       return {
         success: false,
         error: "Invalid Input",
         message: "Username cannot be empty",
-        status: 400
+        status: 400,
       };
     }
 
@@ -18,12 +18,15 @@ module.exports = async (handle) => {
     );
 
     // Check if user exists
-    if (data.includes("User not found") || data.includes("Could not find user")) {
+    if (
+      data.includes("User not found") ||
+      data.includes("Could not find user")
+    ) {
       return {
         success: false,
         error: "User Not Found",
         message: `No CodeChef user found with handle: ${handle}`,
-        status: 404
+        status: 404,
       };
     }
 
@@ -31,6 +34,7 @@ module.exports = async (handle) => {
 
     const profile = $(".user-details-container");
     const ratingRanks = $(".rating-ranks");
+    const totalSolved = $(".rating-data-section");
 
     // Check if profile data exists
     if (!profile.length) {
@@ -38,23 +42,36 @@ module.exports = async (handle) => {
         success: false,
         error: "Profile Data Error",
         message: "Could not find profile data",
-        status: 500
+        status: 500,
       };
     }
 
     const name = profile.find("h1.h2-style").text().trim();
     const profileImage = profile.find("img").attr("src");
     const currentRating = parseInt($(".rating-number").first().text()) || 0;
-    const highestRating = parseInt(
-      $(".rating-number").parent().find("small").text().replace(/[^\d]/g, "")
-    ) || 0;
+    const highestRating =
+      parseInt(
+        $(".rating-number").parent().find("small").text().replace(/[^\d]/g, "")
+      ) || 0;
     const stars = $(".rating").first().text().trim() || "0★";
-    const countryName = $(".user-country-name").text().trim() || "Not specified";
+    const countryName =
+      $(".user-country-name").text().trim() || "Not specified";
     const countryFlag = $(".user-country-flag").attr("src") || "";
-    
-    const globalRank = parseInt(ratingRanks.find(".inline-list li").first().find("strong").text()) || 0;
-    const countryRank = parseInt(ratingRanks.find(".inline-list li").last().find("strong").text()) || 0;
 
+    const globalRank =
+      parseInt(
+        ratingRanks.find(".inline-list li").first().find("strong").text()
+      ) || 0;
+    const countryRank =
+      parseInt(
+        ratingRanks.find(".inline-list li").last().find("strong").text()
+      ) || 0;
+    const totalSolvedCount = totalSolved
+      .find("h3")
+      .last()
+      .text()
+      .split(":")[1]
+      .trim();
     return {
       success: true,
       name,
@@ -66,7 +83,8 @@ module.exports = async (handle) => {
       countryFlag,
       globalRank,
       countryRank,
-      status: 200
+      totalSolvedCount,
+      status: 200,
     };
   } catch (err) {
     // Handle specific error cases
@@ -76,7 +94,7 @@ module.exports = async (handle) => {
           success: false,
           error: "User Not Found",
           message: `No CodeChef user found with handle: ${handle}`,
-          status: 404
+          status: 404,
         };
       }
       if (err.response.status === 403) {
@@ -84,17 +102,17 @@ module.exports = async (handle) => {
           success: false,
           error: "Access Denied",
           message: "Access to CodeChef profile was denied",
-          status: 403
+          status: 403,
         };
       }
     }
-    
-    if (err.code === 'ECONNREFUSED' || err.code === 'ETIMEDOUT') {
+
+    if (err.code === "ECONNREFUSED" || err.code === "ETIMEDOUT") {
       return {
         success: false,
         error: "Connection Error",
         message: "Could not connect to CodeChef. Please try again later.",
-        status: 503
+        status: 503,
       };
     }
 
@@ -102,7 +120,7 @@ module.exports = async (handle) => {
       success: false,
       error: "Error fetching profile data",
       message: err?.message || "Unknown error occurred",
-      status: 500
+      status: 500,
     };
   }
 };
