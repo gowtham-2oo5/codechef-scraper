@@ -1,20 +1,22 @@
-# 📊 CodeChef User Scraper API
+# CodeChef User Scraper API
 
-A simple Express.js API that fetches **live CodeChef user data** using Puppeteer.
+A simple Express.js API that fetches **live CodeChef user data** using Puppeteer with Redis caching.
 
 ---
 
-### 🎯 Features
+## 🎯 Features
 
 * User Profile Info  
 * Rating Graph Data  
 * Recent Accepted Submissions  
 * Aggregated Whole Profile  
+* Upcoming Contests
+* Redis-based caching
 * Swagger API Docs  
 
 ---
 
-## 🛠️ Live API Endpoints
+## 🛠️ API Endpoints
 
 | Route                  | What it does       |
 | ---------------------- | ------------------ |
@@ -23,75 +25,109 @@ A simple Express.js API that fetches **live CodeChef user data** using Puppeteer
 | `/api/profile/:handle` | Basic user info    |
 | `/api/ratings/:handle` | Ratings history    |
 | `/api/recent/:handle`  | Recent submissions |
-
-🔗 **API Base URL**: [https://codechef-scraper-api.onrender.com](https://codechef-scraper-api.onrender.com)
+| `/api/upcoming`        | Upcoming contests  |
 
 ---
 
-## ⚙️ Under the Hood
+## ⚙️ Tech Stack
 
 * Express.js server  
 * Puppeteer (headless scraping)  
+* Redis (caching)
 * Clean REST APIs  
-* Deployed on Render  
 
 ---
 
 ## 🚀 Setup Instructions
 
-Follow these steps to run the project locally:
+### Prerequisites
+- Node.js 18+
+- Redis server
+- Chrome/Chromium browser
 
-1. **Fork the Repository**
-   > Click the fork button at the top-right corner of this repo.
+### Installation
 
-2. **Clone Your Fork**
+1. **Clone the Repository**
    ```bash
    git clone https://github.com/your-username/codechef-data-scraper.git
    cd codechef-data-scraper
    ```
 
-3. **Install Dependencies**
+2. **Install Dependencies**
    ```bash
    npm install
    ```
 
-4. **Start Development Server**
+3. **Configure Environment**
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Edit `.env` with your settings:
+   ```env
+   PORT=8800
+   REDIS_HOST=localhost
+   REDIS_PORT=6379
+   CACHE_TTL=3600
+   ```
+
+4. **Start Redis** (if not running)
+   ```bash
+   redis-server
+   ```
+
+5. **Start Development Server**
    ```bash
    npm run dev
    ```
 
-5. **Test the API**
-   Open your browser or Postman and try:
+6. **Test the API**
    ```
-   http://localhost:3000/api/profile/your_codechef_username # Doesnt require chromium
-   http://localhost:3000/api/whole/your_codechef_username # Requires chromium
+   http://localhost:8800/api/profile/your_codechef_username
+   http://localhost:8800/api/whole/your_codechef_username
    ```
 
-> 📌 Make sure you have a stable internet connection. Puppeteer will launch a headless Chromium instance to scrape data from CodeChef.
+---
+
+## 🔧 Configuration
+
+### Environment Variables
+
+- `PORT` - Server port (default: 8800)
+- `NODE_ENV` - Environment (development/production)
+- `REDIS_HOST` - Redis host (default: localhost)
+- `REDIS_PORT` - Redis port (default: 6379)
+- `REDIS_PASSWORD` - Redis password (optional)
+- `CACHE_TTL` - Cache TTL in seconds (default: 3600)
+- `PUPPETEER_EXECUTABLE_PATH` - Chrome path (auto-detected if not set)
+
+### Chrome Detection
+
+The app automatically detects Chrome in common locations:
+- `/usr/bin/google-chrome`
+- `/usr/bin/chromium-browser`
+- `/usr/bin/chromium`
+- `~/.cache/puppeteer/chrome/*/chrome`
+
+Set `PUPPETEER_EXECUTABLE_PATH` to override.
 
 ---
 
 ## 🔍 Error Handling
 
-The API provides detailed error responses for various scenarios:
-
-* `400 Bad Request` - Invalid input (e.g., empty username)  
-* `404 Not Found` - User not found on CodeChef  
-* `500 Internal Server Error` - Server-side errors  
-* `503 Service Unavailable` - Connection issues with CodeChef  
-
-All error responses follow this format:
-```json
-{
-  "success": false,
-  "error": "Error Type",
-  "message": "Detailed error message",
-  "status": 400
-}
-```
+* `400 Bad Request` - Invalid input
+* `404 Not Found` - User not found
+* `500 Internal Server Error` - Server errors
+* `503 Service Unavailable` - Connection issues
 
 ---
 
-## 🧑‍💻 Curious for more?
+## 📝 License
 
-Check out my other cool projects here 👉 [@gowtham-2oo5](https://github.com/gowtham-2oo5)
+ISC
+
+---
+
+## 🧑‍💻 Author
+
+[@gowtham-2oo5](https://github.com/gowtham-2oo5)

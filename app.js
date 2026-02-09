@@ -1,10 +1,8 @@
+require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger/config.json");
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
 
 const app = express();
 const PORT = process.env.PORT || 8800;
@@ -33,53 +31,6 @@ app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
  * Health Check Endpoint
  ============================ **/
 app.get("/health", (_, res) => res.send("OK"));
-
-/** ============================
- * Debug Chrome Cache & Puppeteer
- ============================ **/
-app.get('/debug/chrome', (req, res) => {
-  try {
-    const cacheDir = process.env.PUPPETEER_CACHE_DIR || '/opt/render/.cache/puppeteer';
-    const results = {
-      environment: {
-        NODE_ENV: process.env.NODE_ENV,
-        PUPPETEER_CACHE_DIR: process.env.PUPPETEER_CACHE_DIR,
-        PUPPETEER_EXECUTABLE_PATH: process.env.PUPPETEER_EXECUTABLE_PATH,
-        PUPPETEER_DOWNLOAD_BASE_URL: process.env.PUPPETEER_DOWNLOAD_BASE_URL,
-        PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: process.env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
-      },
-      cacheDirExists: fs.existsSync(cacheDir),
-      cacheDirContents: []
-    };
-
-    if (results.cacheDirExists) {
-      try {
-        const chromeFiles = execSync(`find ${cacheDir} -type f -name "chrome" | xargs ls -la`, { encoding: 'utf8' });
-        results.chromeExecutables = chromeFiles.trim().split('\n');
-      } catch (e) {
-        results.findError = e.message;
-      }
-
-      try {
-        const cacheContents = execSync(`find ${cacheDir} -type f | head -10`, { encoding: 'utf8' });
-        results.cacheDirContents = cacheContents.trim().split('\n');
-      } catch (e) {
-        results.cacheDirError = e.message;
-      }
-    }
-
-    try {
-      const installOutput = execSync('npx puppeteer browsers install chrome@136.0.7103.92', { encoding: 'utf8' });
-      results.installAttempt = installOutput;
-    } catch (e) {
-      results.installError = e.message;
-    }
-
-    res.json(results);
-  } catch (err) {
-    res.status(500).json({ error: "Error in debug endpoint", message: err.message });
-  }
-});
 
 /** ============================
  * Error Handling Middleware

@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "echo 'No build step required lol'",
     "dev": "nodemon app.js",
+    "start": "node app.js",
     "install-browsers": "puppeteer browsers install chrome"
   },
   "keywords": [],
@@ -17,7 +18,9 @@
     "axios": "^1.9.0",
     "cheerio": "^1.0.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express": "^5.1.0",
+    "ioredis": "^5.4.2",
     "nodemon": "^3.1.10",
     "puppeteer": "^24.8.2",
     "swagger-ui-express": "^5.0.1"

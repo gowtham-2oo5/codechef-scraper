@@ -11,12 +11,16 @@
   },
   "servers": [
     {
-      "url": "https://codechef-scraper-api.onrender.com",
+      "url": "https://codechef-scraper.gowth.tech",
       "description": "Production server"
     },
     {
       "url": "http://localhost:8800",
       "description": "Local development server"
+    },
+    {
+      "url": "http://192.168.0.2:8800",
+      "description": "Mobile server test"
     }
   ],
   "tags": [

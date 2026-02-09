@@ -1,20 +1,32 @@
 const express = require("express");
-const router = express.Router();
+const cache = require("../utils/cache");
 const fetchUpcoming = require("../scrapers/fetchUpcoming");
 
+const router = express.Router();
+
 router.get("/", async (req, res) => {
-  console.log("Fetching upcoming contests, routes/upcoming.js");
   try {
-    const result = await fetchUpcoming();
-    res.status(result.success ? 200 : 500).json(result);
-  } catch (error) {
+    const cacheKey = "upcoming:contests";
+    const cached = await cache.get(cacheKey);
+    
+    if (cached) {
+      return res.json({ ...cached, cached: true });
+    }
+
+    const data = await fetchUpcoming();
+    
+    if (data.success) {
+      await cache.set(cacheKey, data, 1800); // Cache for 30 minutes
+    }
+    
+    res.json(data);
+  } catch (err) {
     res.status(500).json({
       success: false,
-      error: "Internal Server Error",
-      message: "An unexpected error occurred while processing your request",
-      status: 500
+      error: "Server Error",
+      message: err.message
     });
   }
 });
 
-module.exports = router; 
+module.exports = router;
