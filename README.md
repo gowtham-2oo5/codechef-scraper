@@ -103,13 +103,15 @@ A simple Express.js API that fetches **live CodeChef user data** using Puppeteer
 
 ### Chrome Detection
 
-The app automatically detects Chrome in common locations:
-- `/usr/bin/google-chrome`
-- `/usr/bin/chromium-browser`
-- `/usr/bin/chromium`
-- `~/.cache/puppeteer/chrome/*/chrome`
+The app automatically detects Chrome/Chromium:
+- **Windows**: `C:\Program Files\Google\Chrome\Application\chrome.exe`
+- **Linux**: `/usr/bin/google-chrome`, `/usr/bin/chromium`
+- **Custom**: Set `PUPPETEER_EXECUTABLE_PATH` to override
 
-Set `PUPPETEER_EXECUTABLE_PATH` to override.
+### Redis (Optional)
+
+- **With Redis**: Full caching + distributed rate limiting
+- **Without Redis**: Works fine, uses in-memory rate limiting (single instance only)
 
 ---
 

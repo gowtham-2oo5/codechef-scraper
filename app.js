@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger/config.json");
+const rateLimiter = require("./middleware/rateLimiter");
 
 const app = express();
 const PORT = process.env.PORT || 8800;
@@ -12,6 +13,7 @@ const PORT = process.env.PORT || 8800;
  ============================ **/
 app.use(cors());
 app.use(express.json());
+app.use(rateLimiter);
 
 /** ============================
  * API Routes
